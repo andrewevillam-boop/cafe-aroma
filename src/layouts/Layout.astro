@@ -1,6 +1,7 @@
 ---
 import "@/styles/global.css"
 import "@/styles/app.css"
+import { ClientRouter, fade } from "astro:transitions"
 import { LightRays } from "@/components/ui/light-rays"
 import { AppSidebar } from "@/components/AppSidebar"
 
@@ -17,15 +18,23 @@ const rutaActual = Astro.url.pathname
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title} — Café Aroma</title>
+    <ClientRouter />
   </head>
   <body class="bg-background text-foreground">
 
     <script is:inline>
-      const temaGuardado = localStorage.getItem("theme")
-      const prefiereDark = window.matchMedia("(prefers-color-scheme: dark)").matches
-      if (temaGuardado === "dark" || (!temaGuardado && prefiereDark)) {
-        document.documentElement.classList.add("dark")
+      function aplicarTema() {
+        const temaGuardado = localStorage.getItem("theme")
+        const prefiereDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+        if (temaGuardado === "dark" || (!temaGuardado && prefiereDark)) {
+          document.documentElement.classList.add("dark")
+        } else {
+          document.documentElement.classList.remove("dark")
+        }
       }
+      // Corre en el load inicial y después de cada navegación con ClientRouter
+      aplicarTema()
+      document.addEventListener("astro:after-swap", aplicarTema)
     </script>
 
     <!-- Fondo animado detrás de todo -->
@@ -33,11 +42,11 @@ const rutaActual = Astro.url.pathname
       <LightRays client:load opacity={0.18} />
     </div>
 
-    <!-- Sidebar con SidebarProvider (React island) -->
-    <AppSidebar client:load currentPath={rutaActual} />
+    <!-- Sidebar persistido entre navegaciones para evitar re-renders -->
+    <AppSidebar client:load currentPath={rutaActual} transition:persist />
 
-    <!-- Contenido principal desplazado a la derecha del sidebar en desktop -->
-    <main class="md:ml-64 p-6 pt-14 md:pt-6 pb-6 min-h-screen">
+    <!-- Contenido principal con transición fade al navegar -->
+    <main transition:animate={fade({ duration: "0.2s" })} class="md:ml-64 p-6 pt-14 md:pt-6 pb-6 min-h-screen">
       <slot />
     </main>
 

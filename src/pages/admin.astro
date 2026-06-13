@@ -18,12 +18,14 @@ const total = pedido.items.reduce(
 
 <Layout title="Admin">
   <h1 class="text-2xl font-bold mb-1">Facturación</h1>
-  <p class="text-muted-foreground mb-6 text-sm">Mesa {pedido.mesa} — Pedido #{pedido.id} — {pedido.hora}</p>
+  <p class="text-muted-foreground mb-6 text-sm">
+    Mesa {pedido.mesa} — Pedido #{pedido.id} — {pedido.hora}
+  </p>
 
   <Card>
     <CardHeader>
-      <CardTitle class="text-base flex items-center gap-2">
-        <FileText className="h-4 w-4 text-primary" />
+      <CardTitle className="flex items-center gap-2 text-base">
+        <FileText className="h-4 w-4 text-primary shrink-0" />
         Ítems consumidos
       </CardTitle>
     </CardHeader>
@@ -33,25 +35,25 @@ const total = pedido.items.reduce(
           <TableHeader>
             <TableRow>
               <TableHead>Producto</TableHead>
-              <TableHead class="text-center">Cant.</TableHead>
-              <TableHead class="text-right">Precio</TableHead>
-              <TableHead class="text-right">Subtotal</TableHead>
+              <TableHead className="text-center">Cant.</TableHead>
+              <TableHead className="text-right">Precio</TableHead>
+              <TableHead className="text-right">Subtotal</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {pedido.items.map(item => (
               <TableRow>
-                <TableCell class="font-medium">{item.nombre}</TableCell>
-                <TableCell class="text-center">{item.cantidad}</TableCell>
-                <TableCell class="text-right">${item.precio.toFixed(2)}</TableCell>
-                <TableCell class="text-right">
+                <TableCell className="font-medium">{item.nombre}</TableCell>
+                <TableCell className="text-center">{item.cantidad}</TableCell>
+                <TableCell className="text-right">${item.precio.toFixed(2)}</TableCell>
+                <TableCell className="text-right">
                   ${(item.precio * item.cantidad).toFixed(2)}
                 </TableCell>
               </TableRow>
             ))}
             <TableRow>
-              <TableCell colSpan={3} class="text-right font-bold">Total</TableCell>
-              <TableCell class="text-right font-bold text-primary">
+              <TableCell colSpan={3} className="text-right font-bold">Total</TableCell>
+              <TableCell className="text-right font-bold text-primary">
                 ${total.toFixed(2)}
               </TableCell>
             </TableRow>
@@ -59,8 +61,8 @@ const total = pedido.items.reduce(
         </Table>
       </div>
 
-      <div class="mt-6 flex justify-end">
-        <Button class="flex items-center gap-2">
+      <div class="flex justify-end mt-6">
+        <Button className="flex items-center gap-2">
           <FileText className="h-4 w-4" />
           Generar Factura
         </Button>

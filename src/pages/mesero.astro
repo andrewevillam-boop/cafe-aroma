@@ -4,8 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ShoppingCart, UtensilsCrossed } from "lucide-react"
 import { menu, pedidoMesero } from "@/data/mock"
-
-const categorias = ["Bebidas Calientes", "Bebidas Frías", "Comidas", "Postres"] as const
+import { MenuPaginado } from "@/components/MenuPaginado"
 
 const subtotal = pedidoMesero.reduce(
   (acc, item) => acc + item.precio * item.cantidad,
@@ -19,72 +18,55 @@ const subtotal = pedidoMesero.reduce(
 
   <div class="grid lg:grid-cols-2 gap-6">
 
-    <div>
-      <div class="flex items-center gap-2 mb-4">
-        <UtensilsCrossed className="h-5 w-5 text-primary" />
-        <h2 class="text-lg font-semibold">Menú</h2>
-      </div>
+    <!-- Sección: Menú -->
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-base">
+          <UtensilsCrossed className="h-4 w-4 text-primary shrink-0" />
+          Menú
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <MenuPaginado client:load menu={menu} />
+      </CardContent>
+    </Card>
 
-      <div class="flex flex-col gap-4">
-        {categorias.map(cat => (
-          <div>
-            <p class="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
-              {cat}
-            </p>
-            <div class="flex flex-col gap-1.5">
-              {menu.filter(item => item.categoria === cat).map(item => (
-                <Card>
-                  <CardContent class="flex justify-between items-center py-2.5 px-4">
-                    <span class="text-sm font-medium">{item.nombre}</span>
-                    <div class="flex items-center gap-3 shrink-0">
-                      <span class="text-sm text-muted-foreground">
-                        ${item.precio.toFixed(2)}
-                      </span>
-                      <Button size="sm" variant="outline" class="h-7 text-xs px-2">
-                        + Agregar
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+    <!-- Sección: Pedido actual -->
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-base">
+          <ShoppingCart className="h-4 w-4 text-primary shrink-0" />
+          Pedido Actual
+          <span class="ml-auto text-sm font-normal text-muted-foreground">
+            {pedidoMesero.length} ítems
+          </span>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-3">
+        {pedidoMesero.map(item => (
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="text-sm font-medium">{item.nombre}</p>
+              <p class="text-xs text-muted-foreground">
+                x{item.cantidad} × ${item.precio.toFixed(2)}
+              </p>
             </div>
+            <span class="text-sm font-medium shrink-0">
+              ${(item.precio * item.cantidad).toFixed(2)}
+            </span>
           </div>
         ))}
-      </div>
-    </div>
 
-    <div>
-      <div class="flex items-center gap-2 mb-4">
-        <ShoppingCart className="h-5 w-5 text-primary" />
-        <h2 class="text-lg font-semibold">Pedido Actual</h2>
-      </div>
+        <div class="border-t pt-3 mt-1 flex justify-between font-semibold text-sm">
+          <span>Subtotal</span>
+          <span>${subtotal.toFixed(2)}</span>
+        </div>
 
-      <Card>
-        <CardHeader class="pb-2">
-          <CardTitle class="text-base">{pedidoMesero.length} ítems seleccionados</CardTitle>
-        </CardHeader>
-        <CardContent class="flex flex-col gap-3">
-          {pedidoMesero.map(item => (
-            <div class="flex justify-between items-start">
-              <div>
-                <p class="text-sm font-medium">{item.nombre}</p>
-                <p class="text-xs text-muted-foreground">x{item.cantidad} × ${item.precio.toFixed(2)}</p>
-              </div>
-              <span class="text-sm font-medium shrink-0">
-                ${(item.precio * item.cantidad).toFixed(2)}
-              </span>
-            </div>
-          ))}
-
-          <div class="border-t pt-3 mt-1 flex justify-between font-semibold">
-            <span>Subtotal</span>
-            <span>${subtotal.toFixed(2)}</span>
-          </div>
-
-          <Button class="w-full mt-1">Confirmar Pedido</Button>
-        </CardContent>
-      </Card>
-    </div>
+        <div class="flex justify-end mt-1">
+          <Button>Confirmar Pedido</Button>
+        </div>
+      </CardContent>
+    </Card>
 
   </div>
 </Layout>
