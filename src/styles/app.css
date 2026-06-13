@@ -1,5 +1,12 @@
 /* Estilos globales de la app — NO modificar global.css (tema tweakcn/caffeine) */
 
+/* El --destructive del tema caffeine (L≈0.63) tiene poco contraste sobre fondos claros.
+   En light mode oscurecemos solo el color de texto sin tocar el tema. */
+html:not(.dark) .text-destructive,
+html:not(.dark) [data-variant="destructive"] {
+  color: color-mix(in oklch, var(--destructive), black 40%);
+}
+
 /* ── Grids auto-ajustables ───────────────────────────────────────────────────
    auto-fill: crea tantas columnas como quepan en el ancho disponible.
    minmax(mín, máx): cada columna mide entre mín y máx.
