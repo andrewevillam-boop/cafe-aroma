@@ -1,9 +1,9 @@
 ---
-import Nav from "@/components/Nav.astro"
+import Layout from "@/layouts/Layout.astro"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Users } from "lucide-react"
 import { mesas } from "@/data/mock"
-import "@/styles/global.css"
 
 const variantPorEstado = {
   Disponible: "secondary",
@@ -12,30 +12,24 @@ const variantPorEstado = {
 } as const
 ---
 
-<html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <title>Café Aroma — Dashboard</title>
-  </head>
-  <body class="bg-background text-foreground min-h-screen">
-    <Nav />
-    <main class="p-6 max-w-4xl mx-auto">
-      <h1 class="text-2xl font-bold mb-6">Estado de Mesas</h1>
-      <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-        {mesas.map(mesa => (
-          <Card>
-            <CardHeader class="pb-2">
-              <CardTitle class="text-lg">Mesa {mesa.id}</CardTitle>
-            </CardHeader>
-            <CardContent class="flex justify-between items-center">
-              <span class="text-sm text-muted-foreground">{mesa.capacidad} personas</span>
-              <Badge variant={variantPorEstado[mesa.estado]}>{mesa.estado}</Badge>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    </main>
-  </body>
-</html>
+<Layout title="Dashboard">
+  <h1 class="text-2xl font-bold mb-1">Estado de Mesas</h1>
+  <p class="text-muted-foreground mb-6 text-sm">Visión general del salón en tiempo real</p>
+
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+    {mesas.map(mesa => (
+      <Card>
+        <CardHeader class="pb-1 pt-4 px-4">
+          <CardTitle class="text-base">Mesa {mesa.id}</CardTitle>
+        </CardHeader>
+        <CardContent class="flex justify-between items-center px-4 pb-4">
+          <span class="flex items-center gap-1 text-sm text-muted-foreground">
+            <Users className="h-3.5 w-3.5" />
+            {mesa.capacidad}
+          </span>
+          <Badge variant={variantPorEstado[mesa.estado]}>{mesa.estado}</Badge>
+        </CardContent>
+      </Card>
+    ))}
+  </div>
+</Layout>

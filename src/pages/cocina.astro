@@ -1,8 +1,8 @@
 ---
-import "@/styles/global.css"
-import Nav from "@/components/Nav.astro"
+import Layout from "@/layouts/Layout.astro"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Clock } from "lucide-react"
 import { pedidos } from "@/data/mock"
 import type { EstadoItem } from "@/data/mock"
 
@@ -13,38 +13,37 @@ const variantPorEstado: Record<EstadoItem, "secondary" | "default" | "outline"> 
 }
 ---
 
-<html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>Café Aroma — Cocina</title>
-  </head>
-  <body class="bg-background text-foreground min-h-screen">
-    <Nav />
-    <main class="p-6 max-w-4xl mx-auto">
-      <h1 class="text-2xl font-bold mb-6">Pantalla de Cocina</h1>
-      <div class="grid md:grid-cols-2 gap-4">
-        {pedidos.map(pedido => (
-          <Card>
-            <CardHeader class="pb-2">
-              <div class="flex justify-between items-center">
-                <CardTitle class="text-base">Mesa {pedido.mesa}</CardTitle>
-                <span class="text-xs text-muted-foreground">{pedido.hora}</span>
-              </div>
-            </CardHeader>
-            <CardContent class="flex flex-col gap-2">
-              {pedido.items.map(item => (
-                <div class="flex justify-between items-center">
-                  <span class="text-sm">
-                    {item.nombre} <span class="text-muted-foreground">x{item.cantidad}</span>
-                  </span>
-                  <Badge variant={variantPorEstado[item.estado]}>{item.estado}</Badge>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    </main>
-  </body>
-</html>
+<Layout title="Cocina">
+  <h1 class="text-2xl font-bold mb-1">Pantalla de Cocina</h1>
+  <p class="text-muted-foreground mb-6 text-sm">{pedidos.length} pedidos activos</p>
+
+  <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
+    {pedidos.map(pedido => (
+      <Card>
+        <CardHeader class="pb-2 pt-4 px-4">
+          <div class="flex justify-between items-center">
+            <CardTitle class="text-base">Mesa {pedido.mesa}</CardTitle>
+            <span class="flex items-center gap-1 text-xs text-muted-foreground">
+              <Clock className="h-3 w-3" />
+              {pedido.hora}
+            </span>
+          </div>
+          <p class="text-xs text-muted-foreground">Pedido #{pedido.id}</p>
+        </CardHeader>
+        <CardContent class="flex flex-col gap-2 px-4 pb-4">
+          {pedido.items.map(item => (
+            <div class="flex justify-between items-center gap-2">
+              <span class="text-sm truncate">
+                {item.nombre}
+                <span class="text-muted-foreground ml-1">x{item.cantidad}</span>
+              </span>
+              <Badge variant={variantPorEstado[item.estado]} class="shrink-0 text-xs">
+                {item.estado}
+              </Badge>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+    ))}
+  </div>
+</Layout>
