@@ -1,25 +1,26 @@
 /**
- * CocinaView.tsx — Vista de la cocina
+ * CocinaView.tsx — Vista de la cocina (diseño compacto)
  *
- * Muestra los pedidos activos para que el personal de cocina
- * actualice el estado de cada ítem conforme los prepara.
+ * Cada ítem tiene un icono clicable que avanza su estado en un ciclo de 3:
+ *   ○ Pendiente → ◑ En Preparación → ✓ Entregado
  *
- * Flujo:
- *   1. El mesero confirma un pedido → aparece aquí en estado "Pendiente"
- *   2. El cocinero presiona "→ En Preparación" cuando empieza a preparar el ítem
- *   3. Presiona "→ Entregado" cuando el mesero lleva el ítem a la mesa
- *
- * Cuando todos los ítems de un pedido están "Entregado", el pedido
- * aparece resaltado para indicar que está listo para cobrar.
+ * El icono reemplaza al botón para ahorrar espacio vertical y permitir
+ * ver más pedidos en pantalla. El badge muestra el estado en texto.
+ * Al llegar a "Entregado", el ítem queda tachado y el icono se desactiva.
  */
 
 import { useCafeStore } from "@/store/useCafeStore"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ChefHat, CheckCircle2 } from "lucide-react"
+import { Circle, Timer, CheckCircle2 } from "lucide-react"
 
-// Colores de badge según el estado del ítem
+// Icono visual según el estado del ítem — también actúa como control
+function EstadoIcon({ estado }: { estado: string }) {
+  if (estado === "Entregado")      return <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+  if (estado === "En Preparación") return <Timer        className="h-4 w-4 text-primary shrink-0" />
+  return                                  <Circle       className="h-4 w-4 text-muted-foreground shrink-0" />
+}
+
 const variantPorEstado = {
   "Pendiente":      "destructive",
   "En Preparación": "default",
@@ -27,8 +28,8 @@ const variantPorEstado = {
 } as const
 
 export function CocinaView() {
-  const pedidos            = useCafeStore(s => s.pedidos)
-  const avanzarEstadoItem  = useCafeStore(s => s.avanzarEstadoItem)
+  const pedidos           = useCafeStore(s => s.pedidos)
+  const avanzarEstadoItem = useCafeStore(s => s.avanzarEstadoItem)
 
   if (pedidos.length === 0) {
     return (
@@ -39,58 +40,52 @@ export function CocinaView() {
   }
 
   return (
-    <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
+    <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
       {pedidos.map(pedido => {
-        // Un pedido está completo cuando todos sus ítems fueron entregados
-        const completo = pedido.items.every(item => item.estado === "Entregado")
+        const completo = pedido.items.every(i => i.estado === "Entregado")
 
         return (
-          <Card key={pedido.id} className={completo ? "border-primary/50 bg-primary/5" : ""}>
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-base">
-                {completo
-                  ? <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
-                  : <ChefHat className="h-4 w-4 text-primary shrink-0" />
-                }
-                Mesa {pedido.mesa}
-                <span className="text-xs font-normal text-muted-foreground ml-auto">
-                  #{pedido.id} · {pedido.hora}
-                </span>
-              </CardTitle>
-              {completo && (
-                <p className="text-xs text-primary font-medium">
-                  Todos los ítems entregados
-                </p>
-              )}
+          <Card key={pedido.id} className={`${completo ? "border-emerald-500/40 bg-emerald-500/5" : ""}`}>
+
+            {/* Cabecera compacta: número de mesa + meta info en una sola línea */}
+            <CardHeader className="py-2 px-3 flex-row items-center justify-between space-y-0">
+              <span className="font-semibold text-sm">Mesa {pedido.mesa}</span>
+              <span className="text-xs text-muted-foreground">#{pedido.id} · {pedido.hora}</span>
             </CardHeader>
 
-            <CardContent className="flex flex-col gap-3">
+            {/* Lista densa de ítems */}
+            <CardContent className="px-3 pb-3 flex flex-col gap-1">
               {pedido.items.map((item, idx) => (
-                <div key={idx} className="flex flex-col gap-1.5 border-b last:border-0 pb-3 last:pb-0">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium">{item.nombre}</p>
-                      <p className="text-xs text-muted-foreground">×{item.cantidad}</p>
-                    </div>
-                    <Badge variant={variantPorEstado[item.estado]} className="text-xs shrink-0">
-                      {item.estado}
-                    </Badge>
-                  </div>
+                <div key={idx} className="flex items-center gap-2">
 
-                  {/* Solo mostramos el botón si el ítem aún no fue entregado */}
-                  {item.estado !== "Entregado" && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="h-7 text-xs w-full"
-                      onClick={() => avanzarEstadoItem(pedido.id, idx)}
-                    >
-                      {item.estado === "Pendiente"
-                        ? "→ En Preparación"
-                        : "→ Entregado"
-                      }
-                    </Button>
-                  )}
+                  {/*
+                    Botón-icono: clic avanza el estado.
+                    disabled cuando ya está Entregado (no hay estado siguiente).
+                    title da feedback en hover sobre qué hará el clic.
+                  */}
+                  <button
+                    onClick={() => avanzarEstadoItem(pedido.id, idx)}
+                    disabled={item.estado === "Entregado"}
+                    title={
+                      item.estado === "Pendiente"      ? "Iniciar preparación" :
+                      item.estado === "En Preparación" ? "Marcar como entregado" :
+                      "Entregado"
+                    }
+                    className="disabled:cursor-default hover:opacity-70 transition-opacity"
+                  >
+                    <EstadoIcon estado={item.estado} />
+                  </button>
+
+                  {/* Nombre tachado cuando está entregado — feedback visual inmediato */}
+                  <span className={`text-sm flex-1 truncate ${item.estado === "Entregado" ? "line-through text-muted-foreground" : ""}`}>
+                    {item.nombre}
+                  </span>
+
+                  <span className="text-xs text-muted-foreground shrink-0">×{item.cantidad}</span>
+
+                  <Badge variant={variantPorEstado[item.estado]} className="text-xs px-1.5 py-0 shrink-0">
+                    {item.estado}
+                  </Badge>
                 </div>
               ))}
             </CardContent>
