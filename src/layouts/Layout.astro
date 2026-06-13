@@ -2,11 +2,13 @@
 import "@/styles/global.css"
 import "@/styles/app.css"
 import { LightRays } from "@/components/ui/light-rays"
+import { AppSidebar } from "@/components/AppSidebar"
 
 interface Props {
   title: string
 }
 const { title } = Astro.props
+const rutaActual = Astro.url.pathname
 ---
 
 <html lang="es">
@@ -26,12 +28,15 @@ const { title } = Astro.props
       }
     </script>
 
+    <!-- Fondo animado detrás de todo -->
     <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
       <LightRays client:load opacity={0.18} />
     </div>
 
-    {/* AppSidebar se agregará en la siguiente tarea */}
+    <!-- Sidebar con SidebarProvider (React island) -->
+    <AppSidebar client:load currentPath={rutaActual} />
 
+    <!-- Contenido principal desplazado a la derecha del sidebar en desktop -->
     <main class="md:ml-64 p-6 pt-14 md:pt-6 pb-6 min-h-screen">
       <slot />
     </main>
