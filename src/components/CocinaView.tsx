@@ -53,12 +53,17 @@ export function CocinaView() {
                 <div key={idx} className="flex items-center gap-2">
 
                   {/*
-                    checked=true solo cuando está Entregado.
-                    Un clic avanza al siguiente estado en el store.
-                    El badge muestra el estado exacto en texto.
+                    Tres estados nativos de Radix/shadcn:
+                      false           → ☐  Pendiente
+                      "indeterminate" → ⊟  En Preparación
+                      true            → ☑  Entregado
                   */}
                   <Checkbox
-                    checked={item.estado === "Entregado"}
+                    checked={
+                      item.estado === "Entregado"      ? true :
+                      item.estado === "En Preparación" ? "indeterminate" :
+                      false
+                    }
                     onCheckedChange={() => avanzarEstadoItem(pedido.id, idx)}
                     disabled={item.estado === "Entregado"}
                   />
