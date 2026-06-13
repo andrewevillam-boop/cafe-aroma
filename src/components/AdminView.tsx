@@ -20,6 +20,7 @@ import {
   TableHead, TableHeader, TableRow,
 } from "@/components/ui/table"
 import { Receipt } from "lucide-react"
+import { UI } from "@/lib/ui"
 
 // Colores de badge según el estado del ítem (igual que en CocinaView)
 const variantPorEstado = {
@@ -41,7 +42,7 @@ export function AdminView() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={UI.gridFacturas}>
       {pedidos.map(pedido => {
         // Calcular el total del pedido: precio × cantidad de cada ítem
         const total = pedido.items.reduce(
