@@ -8,7 +8,7 @@ export const UI = {
   sectionIcon:  "h-4 w-4 text-primary shrink-0",
   // Contenedor de botones de acción (alineados a la derecha)
   actionsRow:   "flex justify-end mt-4",
-  // Grids auto-ajustables — definidos como @utility en app.css
-  gridMesas:    "grid-mesas gap-2",   // tarjetas de mesa, mín 8rem por columna
-  gridPedidos:  "grid-pedidos gap-3", // tarjetas de pedido, mín 14rem por columna
+  // Grids auto-ajustables — definidos como clases CSS en app.css
+  gridMesas:   "grid-mesas",   // tarjetas de mesa,   mín 8rem × 5rem por celda
+  gridPedidos: "grid-pedidos", // tarjetas de pedido, mín 14rem × 8rem por celda
 } as const
