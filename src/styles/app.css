@@ -40,3 +40,10 @@ body {
 [data-magic-ui] * {
   transition: none;
 }
+
+/* Cuando el AnimatedThemeToggler anima el cambio de tema,
+   desactivar el view-transition-name de <main> para que el fade
+   de navegación no interfiera con el reveal circular del toggle */
+:root[data-magicui-theme-vt="active"] main {
+  view-transition-name: none !important;
+}
