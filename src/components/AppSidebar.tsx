@@ -14,14 +14,14 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
-// BASE_URL es "/" en desarrollo y "/cafe-aroma/" en producción (GitHub Pages)
+// BASE_URL: "/" en desarrollo, "/cafe-aroma/" en producción (GitHub Pages)
 const BASE = import.meta.env.BASE_URL
 
 const links = [
-  { href: BASE,                label: "Dashboard", Icon: LayoutDashboard },
-  { href: `${BASE}mesero`,     label: "Mesero",    Icon: ClipboardList   },
-  { href: `${BASE}cocina`,     label: "Cocina",    Icon: ChefHat         },
-  { href: `${BASE}admin`,      label: "Admin",     Icon: Receipt         },
+  { href: BASE,                  label: "Dashboard", Icon: LayoutDashboard },
+  { href: `${BASE}mesero/`,      label: "Mesero",    Icon: ClipboardList   },
+  { href: `${BASE}cocina/`,      label: "Cocina",    Icon: ChefHat         },
+  { href: `${BASE}admin/`,       label: "Admin",     Icon: Receipt         },
 ]
 
 // NavContent es el contenido compartido entre desktop y mobile

@@ -9,6 +9,7 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: "https://andrewevillam-boop.github.io",
   base: "/cafe-aroma",
+  trailingSlash: "always",
   integrations: [react()],
 
   vite: {
