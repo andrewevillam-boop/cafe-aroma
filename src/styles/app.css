@@ -1,5 +1,20 @@
 /* Estilos globales de la app — NO modificar global.css (tema tweakcn/caffeine) */
 
+/* ── Grids auto-ajustables ───────────────────────────────────────────────────
+   @utility registra una clase de Tailwind personalizada.
+   auto-fill crea tantas columnas como quepan; minmax define el rango de tamaño.
+   Uso: <div class="grid-mesas gap-2"> o <div class="grid-pedidos gap-3"> */
+
+@utility grid-mesas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+}
+
+@utility grid-pedidos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+}
+
 /* Base */
 html {
   scroll-behavior: smooth;

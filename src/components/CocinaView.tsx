@@ -14,6 +14,8 @@ import { useCafeStore } from "@/store/useCafeStore"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
+import { UI } from "@/lib/ui"
+import { cn } from "@/lib/utils"
 import type { EstadoItem } from "@/data/mock"
 
 // Mapea el estado del ítem al valor que entiende el Checkbox de Radix
@@ -42,7 +44,7 @@ export function CocinaView() {
   }
 
   return (
-    <div className="grid grid-cols-[repeat(auto-fill,minmax(14rem,1fr))] gap-3">
+    <div className={UI.gridPedidos}>
       {pedidos.map(pedido => {
         const completo = pedido.items.every(i => i.estado === "Entregado")
 
@@ -71,8 +73,7 @@ export function CocinaView() {
                     disabled={item.estado === "Entregado"}
                   />
 
-                  {/* Nombre tachado al entregar — feedback visual inmediato */}
-                  <span className={`text-sm flex-1 truncate ${item.estado === "Entregado" ? "line-through text-muted-foreground" : ""}`}>
+                  <span className={cn("text-sm flex-1 truncate", item.estado === "Entregado" && "line-through text-muted-foreground")}>
                     {item.nombre}
                   </span>
 

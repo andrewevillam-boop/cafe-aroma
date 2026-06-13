@@ -20,6 +20,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Users } from "lucide-react"
 import { navigate } from "astro:transitions/client"
+import { UI } from "@/lib/ui"
 import type { Mesa } from "@/data/mock"
 
 const variantPorEstado = {
@@ -52,8 +53,7 @@ export function MesaGrid() {
         <span className="font-semibold text-destructive">{cerradas}</span> cerradas
       </p>
 
-      {/* Grid auto-ajustable — mín 8rem por tarjeta */}
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(8rem,1fr))] gap-2">
+      <div className={UI.gridMesas}>
         {mesas.map(mesa => (
           <Card
             key={mesa.id}

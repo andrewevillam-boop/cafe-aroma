@@ -8,20 +8,18 @@ import { CheckIcon, MinusIcon } from "lucide-react"
  *   false           → ☐ sin marcar  (Pendiente)
  *   "indeterminate" → ⊟ guión       (En Preparación)
  *   true            → ☑ con check   (Entregado)
- *
- * Radix maneja el estado indeterminate de forma nativa —
- * solo hay que pasar checked="indeterminate" y renderizar el ícono correcto.
  */
 function Checkbox({
   className,
+  checked,
   ...props
 }: React.ComponentProps<typeof CheckboxPrimitive.Root>) {
   return (
     <CheckboxPrimitive.Root
       data-slot="checkbox"
-      // "group" permite que los hijos lean el data-state del padre con group-data-[...]
+      checked={checked}
       className={cn(
-        "group peer relative flex size-4 shrink-0 items-center justify-center rounded-[4px] border border-input transition-colors outline-none",
+        "peer relative flex size-4 shrink-0 items-center justify-center rounded-[4px] border border-input transition-colors outline-none",
         "focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50",
         "disabled:cursor-not-allowed disabled:opacity-50",
         "data-checked:border-primary data-checked:bg-primary data-checked:text-primary-foreground",
@@ -30,14 +28,9 @@ function Checkbox({
       )}
       {...props}
     >
-      <CheckboxPrimitive.Indicator
-        data-slot="checkbox-indicator"
-        className="grid place-content-center text-current transition-none"
-      >
-        {/* Visible solo cuando está marcado (checked) */}
-        <CheckIcon className="size-3.5 group-data-[state=indeterminate]:hidden" />
-        {/* Visible solo en estado indeterminate */}
-        <MinusIcon className="size-3.5 hidden group-data-[state=indeterminate]:block" />
+      <CheckboxPrimitive.Indicator className="grid place-content-center text-current">
+        {/* Ícono según el estado actual — checked controla cuál se muestra */}
+        {checked === "indeterminate" ? <MinusIcon className="size-3.5" /> : <CheckIcon className="size-3.5" />}
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
   )
