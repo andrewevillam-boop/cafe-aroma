@@ -15,6 +15,7 @@
 
 import { useCafeStore } from "@/store/useCafeStore"
 import { MenuPaginado } from "@/components/MenuPaginado"
+import { MesaGrid } from "@/components/MesaGrid"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -33,14 +34,12 @@ export function MeseroView() {
   // Calcular el subtotal sumando precio × cantidad de cada ítem
   const subtotal = carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0)
 
-  // Si el mesero llegó aquí sin seleccionar mesa primero, mostramos un aviso
+  // Sin mesa seleccionada: mostramos el grid para que el mesero elija directamente
   if (!mesaActivaId) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 gap-4 text-center">
-        <p className="text-muted-foreground">No hay ninguna mesa seleccionada.</p>
-        <Button variant="outline" onClick={() => navigate(`${import.meta.env.BASE_URL}`)}>
-          Ir al Dashboard
-        </Button>
+      <div className="flex flex-col gap-2">
+        <p className="text-sm text-muted-foreground">Selecciona una mesa disponible para continuar</p>
+        <MesaGrid />
       </div>
     )
   }

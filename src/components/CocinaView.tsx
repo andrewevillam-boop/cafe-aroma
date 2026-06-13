@@ -1,24 +1,26 @@
 /**
- * CocinaView.tsx — Vista de la cocina (diseño compacto)
+ * CocinaView.tsx — Vista de la cocina
  *
- * Cada ítem tiene un icono clicable que avanza su estado en un ciclo de 3:
- *   ○ Pendiente → ◑ En Preparación → ✓ Entregado
+ * Cada ítem del pedido tiene un Checkbox de 3 estados:
+ *   ☐ false           → Pendiente       (sin preparar)
+ *   ⊟ "indeterminate" → En Preparación  (en proceso)
+ *   ☑ true            → Entregado       (listo y servido)
  *
- * El icono reemplaza al botón para ahorrar espacio vertical y permitir
- * ver más pedidos en pantalla. El badge muestra el estado en texto.
- * Al llegar a "Entregado", el ítem queda tachado y el icono se desactiva.
+ * Un clic en el checkbox avanza al siguiente estado.
+ * Cuando todos los ítems están en "Entregado", la card se resalta en verde.
  */
 
 import { useCafeStore } from "@/store/useCafeStore"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Circle, Timer, CheckCircle2 } from "lucide-react"
+import { Checkbox } from "@/components/ui/checkbox"
+import type { EstadoItem } from "@/data/mock"
 
-// Icono visual según el estado del ítem — también actúa como control
-function EstadoIcon({ estado }: { estado: string }) {
-  if (estado === "Entregado")      return <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
-  if (estado === "En Preparación") return <Timer        className="h-4 w-4 text-primary shrink-0" />
-  return                                  <Circle       className="h-4 w-4 text-muted-foreground shrink-0" />
+// Mapea el estado del ítem al valor que entiende el Checkbox de Radix
+const checkboxState: Record<EstadoItem, boolean | "indeterminate"> = {
+  "Pendiente":      false,
+  "En Preparación": "indeterminate",
+  "Entregado":      true,
 }
 
 const variantPorEstado = {
@@ -40,43 +42,36 @@ export function CocinaView() {
   }
 
   return (
-    <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+    <div className="grid grid-cols-[repeat(auto-fill,minmax(14rem,1fr))] gap-3">
       {pedidos.map(pedido => {
         const completo = pedido.items.every(i => i.estado === "Entregado")
 
         return (
-          <Card key={pedido.id} className={`${completo ? "border-emerald-500/40 bg-emerald-500/5" : ""}`}>
+          <Card key={pedido.id} className={completo ? "border-emerald-500/40 bg-emerald-500/5" : ""}>
 
-            {/* Cabecera compacta: número de mesa + meta info en una sola línea */}
+            {/* Cabecera compacta en una línea */}
             <CardHeader className="py-2 px-3 flex-row items-center justify-between space-y-0">
               <span className="font-semibold text-sm">Mesa {pedido.mesa}</span>
               <span className="text-xs text-muted-foreground">#{pedido.id} · {pedido.hora}</span>
             </CardHeader>
 
-            {/* Lista densa de ítems */}
-            <CardContent className="px-3 pb-3 flex flex-col gap-1">
+            <CardContent className="px-3 pb-3 flex flex-col gap-1.5">
               {pedido.items.map((item, idx) => (
                 <div key={idx} className="flex items-center gap-2">
 
                   {/*
-                    Botón-icono: clic avanza el estado.
-                    disabled cuando ya está Entregado (no hay estado siguiente).
-                    title da feedback en hover sobre qué hará el clic.
+                    Checkbox controlado por el estado del ítem en el store.
+                    onCheckedChange ignora el nuevo valor — siempre avanzamos
+                    al siguiente estado en la secuencia definida en el store.
+                    disabled cuando ya llegó a "Entregado".
                   */}
-                  <button
-                    onClick={() => avanzarEstadoItem(pedido.id, idx)}
+                  <Checkbox
+                    checked={checkboxState[item.estado]}
+                    onCheckedChange={() => avanzarEstadoItem(pedido.id, idx)}
                     disabled={item.estado === "Entregado"}
-                    title={
-                      item.estado === "Pendiente"      ? "Iniciar preparación" :
-                      item.estado === "En Preparación" ? "Marcar como entregado" :
-                      "Entregado"
-                    }
-                    className="disabled:cursor-default hover:opacity-70 transition-opacity"
-                  >
-                    <EstadoIcon estado={item.estado} />
-                  </button>
+                  />
 
-                  {/* Nombre tachado cuando está entregado — feedback visual inmediato */}
+                  {/* Nombre tachado al entregar — feedback visual inmediato */}
                   <span className={`text-sm flex-1 truncate ${item.estado === "Entregado" ? "line-through text-muted-foreground" : ""}`}>
                     {item.nombre}
                   </span>
