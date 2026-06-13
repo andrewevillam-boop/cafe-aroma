@@ -71,7 +71,7 @@ export function MeseroView() {
       </Card>
 
       {/* ── Carrito / Pedido actual ───────────────────────────────────────── */}
-      <Card>
+      <Card className="flex flex-col">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <ShoppingCart className="h-4 w-4 text-primary shrink-0" />
@@ -81,7 +81,7 @@ export function MeseroView() {
             </Badge>
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-col gap-3">
+        <CardContent className="flex flex-col gap-3 flex-1">
 
           {carrito.length === 0 ? (
             <p className="text-sm text-muted-foreground py-4 text-center">
@@ -134,16 +134,17 @@ export function MeseroView() {
                 </div>
               ))}
 
-              {/* Total y botón de confirmar */}
-              <div className="border-t pt-3 mt-1 flex justify-between font-semibold text-sm">
-                <span>Subtotal</span>
-                <span>${subtotal.toFixed(2)}</span>
-              </div>
-
-              <div className="flex justify-end mt-1">
-                <Button onClick={handleConfirmar}>
-                  Confirmar Pedido
-                </Button>
+              {/* Total y botón de confirmar — siempre al fondo */}
+              <div className="mt-auto flex flex-col gap-2 pt-3 border-t">
+                <div className="flex justify-between font-semibold text-sm">
+                  <span>Subtotal</span>
+                  <span>${subtotal.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-end">
+                  <Button onClick={handleConfirmar}>
+                    Confirmar Pedido
+                  </Button>
+                </div>
               </div>
             </>
           )}

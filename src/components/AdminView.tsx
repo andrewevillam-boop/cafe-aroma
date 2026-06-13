@@ -51,7 +51,7 @@ export function AdminView() {
         )
 
         return (
-          <Card key={pedido.id}>
+          <Card key={pedido.id} className="flex flex-col">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">
                 <Receipt className="h-4 w-4 text-primary shrink-0" />
@@ -62,7 +62,7 @@ export function AdminView() {
               </CardTitle>
             </CardHeader>
 
-            <CardContent className="flex flex-col gap-4">
+            <CardContent className="flex flex-col gap-4 flex-1">
               {/* Tabla de ítems */}
               <div className="rounded-md border">
                 <Table>
@@ -95,8 +95,8 @@ export function AdminView() {
                 </Table>
               </div>
 
-              {/* Total y botón de cobro */}
-              <div className="flex items-center justify-between">
+              {/* Total y botón de cobro — siempre al fondo */}
+              <div className="mt-auto flex items-center justify-between border-t pt-3">
                 <div className="text-sm font-semibold">
                   Total: <span className="text-lg">${total.toFixed(2)}</span>
                 </div>
