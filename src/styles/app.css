@@ -1,0 +1,42 @@
+/* Estilos globales de la app — NO modificar global.css (tema tweakcn/caffeine) */
+
+/* Base */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+}
+
+/* Scrollbar sutil que usa los colores del tema */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
+
+/* Transición suave al cambiar de tema */
+*,
+*::before,
+*::after {
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Excluir animaciones Magic UI de la transición de tema */
+[data-magic-ui],
+[data-magic-ui] * {
+  transition: none;
+}
