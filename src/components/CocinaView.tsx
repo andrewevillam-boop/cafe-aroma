@@ -1,13 +1,12 @@
 /**
  * CocinaView.tsx — Vista de la cocina
  *
- * Cada ítem del pedido tiene un Checkbox de 3 estados:
- *   ☐ false           → Pendiente       (sin preparar)
- *   ⊟ "indeterminate" → En Preparación  (en proceso)
- *   ☑ true            → Entregado       (listo y servido)
+ * Cada ítem muestra un Checkbox para avanzar su estado:
+ *   ☐ sin marcar → Pendiente o En Preparación (aún hay trabajo)
+ *   ☑ marcado    → Entregado (listo, desactiva el checkbox)
  *
- * Un clic en el checkbox avanza al siguiente estado.
- * Cuando todos los ítems están en "Entregado", la card se resalta en verde.
+ * El Badge al lado muestra el estado exacto en texto.
+ * Cuando todos los ítems están Entregados, la card se resalta.
  */
 
 import { useCafeStore } from "@/store/useCafeStore"
@@ -17,13 +16,6 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { UI } from "@/lib/ui"
 import { cn } from "@/lib/utils"
 import type { EstadoItem } from "@/data/mock"
-
-// Mapea el estado del ítem al valor que entiende el Checkbox de Radix
-const checkboxState: Record<EstadoItem, boolean | "indeterminate"> = {
-  "Pendiente":      false,
-  "En Preparación": "indeterminate",
-  "Entregado":      true,
-}
 
 const variantPorEstado = {
   "Pendiente":      "destructive",
@@ -51,7 +43,6 @@ export function CocinaView() {
         return (
           <Card key={pedido.id} className={completo ? "border-emerald-500/40 bg-emerald-500/5" : ""}>
 
-            {/* Cabecera compacta en una línea */}
             <CardHeader className="py-2 px-3 flex-row items-center justify-between space-y-0">
               <span className="font-semibold text-sm">Mesa {pedido.mesa}</span>
               <span className="text-xs text-muted-foreground">#{pedido.id} · {pedido.hora}</span>
@@ -62,18 +53,20 @@ export function CocinaView() {
                 <div key={idx} className="flex items-center gap-2">
 
                   {/*
-                    Checkbox controlado por el estado del ítem en el store.
-                    onCheckedChange ignora el nuevo valor — siempre avanzamos
-                    al siguiente estado en la secuencia definida en el store.
-                    disabled cuando ya llegó a "Entregado".
+                    checked=true solo cuando está Entregado.
+                    Un clic avanza al siguiente estado en el store.
+                    El badge muestra el estado exacto en texto.
                   */}
                   <Checkbox
-                    checked={checkboxState[item.estado]}
+                    checked={item.estado === "Entregado"}
                     onCheckedChange={() => avanzarEstadoItem(pedido.id, idx)}
                     disabled={item.estado === "Entregado"}
                   />
 
-                  <span className={cn("text-sm flex-1 truncate", item.estado === "Entregado" && "line-through text-muted-foreground")}>
+                  <span className={cn(
+                    "text-sm flex-1 truncate",
+                    item.estado === "Entregado" && "line-through text-muted-foreground"
+                  )}>
                     {item.nombre}
                   </span>
 
