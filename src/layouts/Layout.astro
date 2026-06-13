@@ -1,0 +1,40 @@
+---
+import "@/styles/global.css"
+import "@/styles/app.css"
+import { LightRays } from "@/components/ui/light-rays"
+
+interface Props {
+  title: string
+}
+const { title } = Astro.props
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title} — Café Aroma</title>
+  </head>
+  <body class="bg-background text-foreground">
+
+    <script is:inline>
+      const temaGuardado = localStorage.getItem("theme")
+      const prefiereDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+      if (temaGuardado === "dark" || (!temaGuardado && prefiereDark)) {
+        document.documentElement.classList.add("dark")
+      }
+    </script>
+
+    <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+      <LightRays client:load opacity={0.18} />
+    </div>
+
+    {/* AppSidebar se agregará en la siguiente tarea */}
+
+    <main class="md:ml-64 p-6 pt-14 md:pt-6 pb-6 min-h-screen">
+      <slot />
+    </main>
+
+  </body>
+</html>
