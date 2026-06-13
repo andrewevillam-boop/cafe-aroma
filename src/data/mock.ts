@@ -1,15 +1,31 @@
-// Tipos de estado
+/**
+ * mock.ts — Datos de ejemplo para Café Aroma
+ *
+ * Este archivo define los TIPOS (las "formas" de los datos) y los DATOS INICIALES
+ * del sistema. En una app real, estos datos vendrían de una base de datos.
+ *
+ * Para el demo, usamos datos fijos que el store carga al iniciar la app.
+ */
+
+// ─── Tipos ────────────────────────────────────────────────────────────────────
+
+/** Estado actual de una mesa en el salón */
 export type EstadoMesa = "Disponible" | "Activa" | "Cerrada"
+
+/** Categoría de un producto en el menú */
 export type Categoria  = "Bebidas Calientes" | "Bebidas Frías" | "Comidas" | "Postres"
+
+/** Estado de un ítem dentro de un pedido en cocina */
 export type EstadoItem = "Pendiente" | "En Preparación" | "Entregado"
 
-// Interfaces
+/** Una mesa del salón */
 export interface Mesa {
   id: number
-  capacidad: number
+  capacidad: number   // cantidad de personas que puede sentar
   estado: EstadoMesa
 }
 
+/** Un producto del menú */
 export interface MenuItem {
   id: number
   nombre: string
@@ -17,21 +33,33 @@ export interface MenuItem {
   categoria: Categoria
 }
 
+/**
+ * Un ítem dentro de un pedido.
+ * Incluye el id del MenuItem para poder referenciarlo en el carrito.
+ */
 export interface ItemPedido {
+  id: number          // id del MenuItem correspondiente
   nombre: string
   cantidad: number
   precio: number
   estado: EstadoItem
 }
 
+/** Un pedido completo asociado a una mesa */
 export interface Pedido {
   id: number
-  mesa: number
+  mesa: number        // id de la Mesa
   hora: string
   items: ItemPedido[]
 }
 
-// 14 mesas — negocio mediano
+// ─── Datos iniciales ──────────────────────────────────────────────────────────
+
+/**
+ * 14 mesas del salón.
+ * El estado inicial simula un turno ya empezado:
+ * 5 disponibles, 6 activas con pedidos, 3 cerradas (pendientes de cobro).
+ */
 export const mesas: Mesa[] = [
   { id: 1,  capacidad: 2, estado: "Disponible" },
   { id: 2,  capacidad: 2, estado: "Activa"     },
@@ -49,7 +77,10 @@ export const mesas: Mesa[] = [
   { id: 14, capacidad: 8, estado: "Disponible" },
 ]
 
-// 24 ítems en 4 categorías
+/**
+ * Menú completo: 24 productos en 4 categorías.
+ * El id de cada producto se usa en el carrito para identificarlo.
+ */
 export const menu: MenuItem[] = [
   // Bebidas Calientes
   { id: 1,  nombre: "Café Espresso",        precio: 3.50, categoria: "Bebidas Calientes" },
@@ -81,63 +112,59 @@ export const menu: MenuItem[] = [
   { id: 24, nombre: "Helado (2 bolas)",     precio: 3.50, categoria: "Postres"           },
 ]
 
-// 4 ítems seleccionados para la vista del mesero (Mesa 6)
-export const pedidoMesero: ItemPedido[] = [
-  { nombre: "Café Americano",   cantidad: 2, precio: 4.00, estado: "Pendiente" },
-  { nombre: "Limonada Natural", cantidad: 3, precio: 3.00, estado: "Pendiente" },
-  { nombre: "Plato del Día",    cantidad: 2, precio: 9.00, estado: "Pendiente" },
-  { nombre: "Flan Casero",      cantidad: 2, precio: 4.00, estado: "Pendiente" },
-]
-
-// 6 pedidos activos
+/**
+ * Pedidos activos al inicio de la sesión.
+ * Corresponden a las 6 mesas con estado "Activa".
+ * El store los carga y a partir de ahí el usuario puede modificarlos.
+ */
 export const pedidos: Pedido[] = [
   {
     id: 101, mesa: 2, hora: "09:15",
     items: [
-      { nombre: "Café Espresso",      cantidad: 2, precio: 3.50, estado: "Entregado"      },
-      { nombre: "Tostada Completa",   cantidad: 1, precio: 5.00, estado: "Entregado"      },
-      { nombre: "Pastel de Queso",    cantidad: 2, precio: 4.50, estado: "En Preparación" },
+      { id: 1,  nombre: "Café Espresso",      cantidad: 2, precio: 3.50, estado: "Entregado"      },
+      { id: 14, nombre: "Tostada Completa",   cantidad: 1, precio: 5.00, estado: "Entregado"      },
+      { id: 20, nombre: "Pastel de Queso",    cantidad: 2, precio: 4.50, estado: "En Preparación" },
     ],
   },
   {
     id: 102, mesa: 4, hora: "09:42",
     items: [
-      { nombre: "Cappuccino",         cantidad: 1, precio: 4.50, estado: "Entregado"      },
-      { nombre: "Arepa Rellena",      cantidad: 1, precio: 6.00, estado: "En Preparación" },
+      { id: 3,  nombre: "Cappuccino",         cantidad: 1, precio: 4.50, estado: "Entregado"      },
+      { id: 13, nombre: "Arepa Rellena",      cantidad: 1, precio: 6.00, estado: "En Preparación" },
     ],
   },
   {
     id: 103, mesa: 5, hora: "10:05",
     items: [
-      { nombre: "Café Latte",         cantidad: 3, precio: 5.00, estado: "En Preparación" },
-      { nombre: "Sándwich Club",      cantidad: 2, precio: 7.50, estado: "Pendiente"      },
-      { nombre: "Jugo de Naranja",    cantidad: 1, precio: 3.50, estado: "Entregado"      },
+      { id: 4,  nombre: "Café Latte",         cantidad: 3, precio: 5.00, estado: "En Preparación" },
+      { id: 15, nombre: "Sándwich Club",      cantidad: 2, precio: 7.50, estado: "Pendiente"      },
+      { id: 7,  nombre: "Jugo de Naranja",    cantidad: 1, precio: 3.50, estado: "Entregado"      },
     ],
   },
   {
     id: 104, mesa: 7, hora: "10:18",
     items: [
-      { nombre: "Agua Mineral",       cantidad: 4, precio: 2.00, estado: "Entregado"      },
-      { nombre: "Pasta del Día",      cantidad: 2, precio: 8.00, estado: "En Preparación" },
-      { nombre: "Ensalada César",     cantidad: 2, precio: 7.00, estado: "Pendiente"      },
-      { nombre: "Helado (2 bolas)",   cantidad: 2, precio: 3.50, estado: "Pendiente"      },
+      { id: 12, nombre: "Agua Mineral",       cantidad: 4, precio: 2.00, estado: "Entregado"      },
+      { id: 16, nombre: "Pasta del Día",      cantidad: 2, precio: 8.00, estado: "En Preparación" },
+      { id: 17, nombre: "Ensalada César",     cantidad: 2, precio: 7.00, estado: "Pendiente"      },
+      { id: 24, nombre: "Helado (2 bolas)",   cantidad: 2, precio: 3.50, estado: "Pendiente"      },
     ],
   },
   {
     id: 105, mesa: 9, hora: "10:33",
     items: [
-      { nombre: "Frappe de Café",     cantidad: 2, precio: 5.50, estado: "Entregado"      },
-      { nombre: "Wrap de Pollo",      cantidad: 2, precio: 7.50, estado: "En Preparación" },
-      { nombre: "Brownie con Helado", cantidad: 1, precio: 5.00, estado: "Pendiente"      },
+      { id: 11, nombre: "Frappe de Café",     cantidad: 2, precio: 5.50, estado: "Entregado"      },
+      { id: 18, nombre: "Wrap de Pollo",      cantidad: 2, precio: 7.50, estado: "En Preparación" },
+      { id: 21, nombre: "Brownie con Helado", cantidad: 1, precio: 5.00, estado: "Pendiente"      },
     ],
   },
   {
     id: 106, mesa: 11, hora: "10:50",
     items: [
-      { nombre: "Chocolate Caliente", cantidad: 5, precio: 4.00, estado: "En Preparación" },
-      { nombre: "Plato del Día",      cantidad: 4, precio: 9.00, estado: "Pendiente"      },
-      { nombre: "Torta de Chocolate", cantidad: 3, precio: 4.50, estado: "Pendiente"      },
-      { nombre: "Jugo de Parchita",   cantidad: 2, precio: 3.50, estado: "Pendiente"      },
+      { id: 6,  nombre: "Chocolate Caliente", cantidad: 5, precio: 4.00, estado: "En Preparación" },
+      { id: 19, nombre: "Plato del Día",      cantidad: 4, precio: 9.00, estado: "Pendiente"      },
+      { id: 23, nombre: "Torta de Chocolate", cantidad: 3, precio: 4.50, estado: "Pendiente"      },
+      { id: 8,  nombre: "Jugo de Parchita",   cantidad: 2, precio: 3.50, estado: "Pendiente"      },
     ],
   },
 ]

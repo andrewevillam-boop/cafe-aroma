@@ -7,8 +7,9 @@ import { AppSidebar } from "@/components/AppSidebar"
 
 interface Props {
   title: string
+  subtitle?: string
 }
-const { title } = Astro.props
+const { title, subtitle } = Astro.props
 const rutaActual = Astro.url.pathname
 ---
 
@@ -20,7 +21,7 @@ const rutaActual = Astro.url.pathname
     <title>{title} — Café Aroma</title>
     <ClientRouter />
   </head>
-  <body class="bg-background text-foreground">
+  <body class="bg-background text-foreground h-screen overflow-hidden">
 
     <script is:inline>
       function aplicarTema() {
@@ -46,8 +47,12 @@ const rutaActual = Astro.url.pathname
     <AppSidebar client:load currentPath={rutaActual} transition:persist />
 
     <!-- Contenido principal con transición fade al navegar -->
-    <main transition:animate={fade({ duration: "0.2s" })} class="md:ml-64 p-6 pt-14 md:pt-6 pb-6 min-h-screen">
-      <slot />
+    <main transition:animate={fade({ duration: "0.2s" })} class="md:ml-64 p-6 pt-14 md:pt-6 pb-6 h-screen overflow-hidden flex flex-col">
+      <h1 class="text-2xl font-bold mb-1 shrink-0">{title}</h1>
+      {subtitle && <p class="text-muted-foreground mb-6 text-sm shrink-0">{subtitle}</p>}
+      <div class="flex-1 overflow-auto min-h-0">
+        <slot />
+      </div>
     </main>
 
   </body>
